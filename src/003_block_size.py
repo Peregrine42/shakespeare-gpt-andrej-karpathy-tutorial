@@ -1,4 +1,5 @@
 from common import encode_func, decode_func
+import torch
 
 
 with open("./data/input.txt", "r", encoding="utf-8") as f:
@@ -8,8 +9,6 @@ chars = sorted(list(set(text)))
 
 encode = encode_func(chars)
 decode = decode_func(chars)
-
-import torch
 
 data = torch.tensor(encode(text), dtype=torch.long)
 

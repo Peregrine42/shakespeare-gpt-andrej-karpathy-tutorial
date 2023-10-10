@@ -2,3 +2,4 @@ torch==2.0.1+cu118
 black==23.9.1
 numpy==1.23.5
 python-dotenv==1.0.0
+ruff==0.0.292

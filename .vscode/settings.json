@@ -1,8 +1,12 @@
 {
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "charliermarsh.ruff"
   },
   "[markdown]": {
     "editor.wordWrap": "off"
-  }
+  },
+  "python.analysis.autoSearchPaths": false,
+  "python.languageServer": "Pylance",
+  "ruff.importStrategy": "fromEnvironment",
+  "ruff.enableExperimentalFormatter": true
 }
