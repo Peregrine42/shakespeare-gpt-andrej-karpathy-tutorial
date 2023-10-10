@@ -2,13 +2,9 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-seed = 1337
-training_loop_iters = 10000
-learning_rate = 1e-3
+torch.manual_seed(1337) # Thanks Andrej: we need to call manual seed twice - once to get the same data when calling get_batch, and then again to get the same result from the BigramLanguageModel later on.
 
-torch.manual_seed(seed) # Thanks Andrej: we need to call manual seed twice - once to get the same data when calling get_batch, and then again to get the same result from the BigramLanguageModel later on.
-
-with open("./data/input.txt", "r", encoding="utf-8") as f:
+with open("data/input.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # here are all the unique characters that occur in this text
@@ -79,15 +75,23 @@ class BigramLanguageModel(nn.Module):
 
 xb, yb = get_batch("train")
 
-torch.manual_seed(seed) # Thanks Andrej: we need to call manual seed twice - once to get the same data when calling get_batch, and then again to get the same result from the BigramLanguageModel later on.
+torch.manual_seed(1337) # Thanks Andrej: we need to call manual seed twice - once to get the same data when calling get_batch, and then again to get the same result from the BigramLanguageModel later on.
 m = BigramLanguageModel(vocab_size)
 logits, loss = m(xb, yb)
+print(logits.shape)
+print(loss)
 
-# --- Train
+print(
+    decode(
+        m.generate(idx=torch.zeros((1, 1), dtype=torch.long), max_new_tokens=100)[
+            0
+        ].tolist()
+    )
+)
 
-optimizer = torch.optim.AdamW(m.parameters(), lr=learning_rate) # also try 1e-4 ideally
+optimizer = torch.optim.AdamW(m.parameters(), lr=1e-3) # also try 1e-4 ideally
 
-for steps in range(training_loop_iters):
+for steps in range(10000):
     xb, yb = get_batch('train')
 
     logits, loss = m(xb, yb)
@@ -96,8 +100,6 @@ for steps in range(training_loop_iters):
     optimizer.step()
 
 print(loss.item())
-
-# --- Infer
 
 print(
     decode(
