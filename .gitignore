@@ -2,3 +2,4 @@ data/*
 !data/README.md
 .venv
 __pycache__
+cuda_test
