@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from common import encode_func, decode_func 
+
 
 seed = 1337
 training_loop_iters = 10000
@@ -15,15 +17,8 @@ with open("./data/input.txt", "r", encoding="utf-8") as f:
 chars = sorted(list(set(text)))
 vocab_size = len(chars)
 
-# create a mapping from characters to integers
-stoi = {ch: i for i, ch in enumerate(chars)}
-itos = {i: ch for i, ch in enumerate(chars)}
-encode = lambda s: [
-    stoi[c] for c in s
-]  # encoder: take a string, output a list of integers
-decode = lambda l: "".join(
-    [itos[i] for i in l]
-)  # decoder: take a list of integers, output a string
+encode = encode_func(chars)
+decode = decode_func(chars)
 
 data = torch.tensor(encode(text), dtype=torch.long)
 
@@ -79,7 +74,7 @@ class BigramLanguageModel(nn.Module):
 
 xb, yb = get_batch("train")
 
-torch.manual_seed(seed) # Thanks Andrej: we need to call manual seed twice - once to get the same data when calling get_batch, and then again to get the same result from the BigramLanguageModel later on.
+torch.manual_seed(seed)
 m = BigramLanguageModel(vocab_size)
 logits, loss = m(xb, yb)
 
